@@ -14,8 +14,12 @@ app.get('/', (req, res) => {
 app.get('/customers', async (req, res) => {
   const randomTimeout = 2000 + Math.ceil(3 * 1000 * Math.random())
   setTimeout(() => {
-    res.status(200).json({ timeout: timeout, data: fakeCustomers })
+    res.status(200).json({ data: fakeCustomers })
   }, randomTimeout)
+  // const randomTimeout = 2000 + Math.ceil(3 * 1000 * Math.random())
+  // setTimeout(() => {
+  //   res.status(200).json({ timeout: timeout, data: fakeCustomers })
+  // }, randomTimeout)
 })
 
 app.get('/bookings', async (req, res) => {
