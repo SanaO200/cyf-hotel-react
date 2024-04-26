@@ -1,43 +1,58 @@
 import React, {useState, useEffect} from 'react';
-import Search from './Search'
+import Search from './Search';
 import SearchResults from "./SearchResults";
-import fakeBookings from '../../../server/data/fakeBookings';
-// import fakeBookings from '../../../server/data/fakeBookings';
-//  import FakeBookings from '../data/fakeBookings'
 
 const Bookings = () => {
 
+  const [allBookings, setAllBookings] = useState([]);
   const [bookings, setBookings] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async url => {
-      try {
-        const response = await fetch(url)
-        if (response.ok) {
-          const data = await response.json()
-          setBookings(data)
-        } else {
-          throw new Error(`server returned status: ${response.statusText}`)
+    useEffect(() => {
+      const fetchData = async url => {
+        try {
+          const response = await fetch(url)
+          if (response.ok) {
+            const data = await response.json()
+            setAllBookings(data.fakeBookings)
+            setBookings(data.fakeBookings)
+          } else {
+            throw new Error(`server returned status: ${response.statusText}`)
+          }
+        } catch (error) {
+          console.error(error)
         }
-      } catch (error) {
-        console.error(error)
-        return []
       }
-    }
 
     fetchData('http://localhost:4000/bookings')
   }, [])
 
   const search = (searchVal) => {
-    console.info('TODO!', searchVal)
-  }
+    console.log('search value:', searchVal);
+    if (searchVal !== "") {
+      const filteredResults = allBookings.filter((booking) => {
+        return (
+          booking.firstName.toLowerCase()
+            .includes(searchVal.toLowerCase()) ||
+          booking.surname.toLowerCase()
+            .includes(searchVal.toLowerCase())
+        )
+      });
 
+      setBookings(filteredResults);
+      console.log("results", filteredResults);
+    }
 
-  return (
+    if (searchVal === "") {
+      setBookings(allBookings);
+    }
+
+  };
+
+    return (
     <div className='App-content'>
       <div className='container' >
         <Search search={search} />
-        <SearchResults results={fakeBookings} />
+        <SearchResults results={bookings} />
       </div>
     </div>
   )

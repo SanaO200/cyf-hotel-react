@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import CustomerProfile from './CustomerProfile';
 import moment from 'moment';
 moment().format();
 
@@ -8,8 +9,11 @@ const CountNumberOfNights = (checkInDate, checkOutDate) => {
     return b.diff(a, "days");
   };
 
+
 const SearchResults = ({ results }) => {
   const [selectedRows, setSelectedRows] = useState([]);
+  const [customerProfile, setCustomerProfile] = useState("");
+
    const selectedClicks = (bookingId) => {
     setSelectedRows((selectedClickedRows) => {
       if (selectedClickedRows.includes(bookingId)) {
@@ -20,9 +24,18 @@ const SearchResults = ({ results }) => {
 });
 }
 
-    return (
+// function handleClickOnButton(id) {
+//     setSelectedId(profile);
+//     console.log("id", id);
+//   }
+
+  const showCustomerProfile = (id) => () => {
+    setCustomerProfile(id)
+}
+
+   return (
     <>
-      <table class='table'>
+      <table className='table'>
         <thead>
           <tr>
             <th scope='col'>id</th>
@@ -34,6 +47,7 @@ const SearchResults = ({ results }) => {
             <th scope='col'>check in date</th>
             <th scope='col'>check out date</th>
             <th scope='col'>number of nights</th>
+            <th scope='col'>Show profile</th>
           </tr>
         </thead>
         <tbody>
@@ -49,10 +63,12 @@ const SearchResults = ({ results }) => {
               <td>{checkInDate}</td>
               <td>{checkOutDate}</td>
               <td>{CountNumberOfNights(checkInDate, checkOutDate)}</td>
+              <td><button className="btn btn-primary" onClick={showCustomerProfile(id)}>Show profile</button></td>
             </tr>
           ))}
         </tbody>
       </table>
+      {customerProfile ? <CustomerProfile id={customerProfile}/> : null}
     </>
   )
 }
