@@ -1,12 +1,15 @@
-import React, {useState, useEffect} from "react"
+import { useState, useEffect } from 'react'
+import Box from '@mui/material/Box'
 
+const customerProfileStyles = { bgcolor: 'black', padding: '2rem' }
 
-const CustomerProfile = ({ id, vip, email, phoneNumber }) => {
-
-	const [profile, setProfile] = useState(null)
+const CustomerProfile = ({ id }) => {
+  const [profile, setProfile] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
-    const fetchData = async url => {
+    const fetchData = async (url) => {
+      setIsLoading(true)
       try {
         const response = await fetch(url)
         if (response.ok) {
@@ -17,25 +20,29 @@ const CustomerProfile = ({ id, vip, email, phoneNumber }) => {
         }
       } catch (error) {
         console.error(error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchData(`http://localhost:4000/customers/${id}`)
-  }, [id] )
+  }, [id])
 
+  return isLoading ? (
+    <div>Loading.....</div>
+  ) : profile ? (
+    <Box sx={customerProfileStyles}>
+      <div className='App-content'>
+        <h4>Customer profile:</h4>
+        <ul>
+          <li>Customer ID: {profile[0].id}</li>
+          <li>VIP: {profile[0].vip ? 'no' : 'yes'}</li>
+          <li>Email: {profile[0].email}</li>
+          <li>Tel: {profile[0].phoneNumber} </li>
+        </ul>
+      </div>
+    </Box>
+  ) : null
+}
 
-	return profile ? (
-          <div className="App-content">
-            <h4>Customer {id} profile</h4>
-            <ul>
-              <li>Customer ID: {id}</li>
-              <li>VIP: {vip ? "Yes" : "No"}</li>
-              <li>Email: {email }</li>
-              <li>Tel:{phoneNumber}</li>
-            </ul>
-          </div>
-      ) : null
-  }
 export default CustomerProfile
-
-

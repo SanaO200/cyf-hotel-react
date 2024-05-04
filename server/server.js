@@ -31,22 +31,29 @@ app.get('/customers', async (req, res) => {
   // }, randomTimeout)
 })
 
-app.get('/customers/:id', async(req, res) => {
-  const id = req.params['id'];
+app.get('/customers/:id', async (req, res) => {
+  const id = req.params['id']
   const randomTimeout = 1000 + Math.ceil(1 * 1000 * Math.random())
   setTimeout(() => {
-    const foundCustomers = fakeCustomers.filter(c => c.id === Number(id))
+    const foundCustomers = fakeCustomers.filter((c) => c.id === Number(id))
     if (foundCustomers.length !== 0) {
       res.status(200).json({ foundCustomers })
     } else {
       res.sendStatus(404)
     }
   }, randomTimeout)
-});
-
+})
 
 app.get('/bookings', async (req, res) => {
-  const randomTimeout = 1000 + Math.ceil(3 * 1000 * Math.random())
+  const randomTimeout = 10000 + Math.ceil(3 * 1000 * Math.random())
+  setTimeout(() => {
+    res.status(200).json({ fakeBookings })
+  }, randomTimeout)
+})
+
+app.get('/error', async (req, res) => {
+  const randomTimeout = 1000 + Math.ceil(2 * 1000 * Math.random())
+  const error = 
   setTimeout(() => {
     res.status(200).json({ fakeBookings })
   }, randomTimeout)

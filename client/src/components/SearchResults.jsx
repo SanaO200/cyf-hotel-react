@@ -1,39 +1,32 @@
-import React, {useState} from 'react';
-import CustomerProfile from './CustomerProfile';
-import moment from 'moment';
-moment().format();
+import React, { useState } from 'react'
+import CustomerProfile from './CustomerProfile'
+import Backdrop from '@mui/material/Backdrop'
+import moment from 'moment'
+moment().format()
 
-const CountNumberOfNights = (checkInDate, checkOutDate) => {
-    let a = moment(checkInDate);
-    let b = moment(checkOutDate);
-    return b.diff(a, "days");
-  };
-
+const countNumberOfNights = (checkInDate, checkOutDate) => {
+  let startDate = moment(checkInDate)
+  let endDate = moment(checkOutDate)
+  return endDate.diff(startDate, 'days')
+}
 
 const SearchResults = ({ results }) => {
-  const [selectedRows, setSelectedRows] = useState([]);
-  const [customerProfile, setCustomerProfile] = useState("");
+  const [selectedId, setSelectedId] = useState(null)
+  const [customerProfileId, setCustomerProfileId] = useState(null)
 
-   const selectedClicks = (bookingId) => {
-    setSelectedRows((selectedClickedRows) => {
-      if (selectedClickedRows.includes(bookingId)) {
-      return selectedClickedRows.filter((id) => id !== bookingId)
-  } else {
-      return [...selectedClickedRows, bookingId];
+  const handleSelection = (bookingId) => {
+    setSelectedId(bookingId)
   }
-});
-}
 
-// function handleClickOnButton(id) {
-//     setSelectedId(profile);
-//     console.log("id", id);
-//   }
+  const showCustomerProfile = (id) => {
+    setCustomerProfileId(id)
+  }
 
-  const showCustomerProfile = (id) => () => {
-    setCustomerProfile(id)
-}
+  const hideCustomerProfile = () => {
+    setCustomerProfileId(null)
+  }
 
-   return (
+  return (
     <>
       <table className='table'>
         <thead>
@@ -52,8 +45,7 @@ const SearchResults = ({ results }) => {
         </thead>
         <tbody>
           {results.map(({ id, title, firstName, surname, email, roomId, checkInDate, checkOutDate }) => (
-            <tr key={id}  className={selectedRows.includes(id) ? "selected-row" : ""}
-            onClick={() => selectedClicks(id)}>
+            <tr key={id} className={id === selectedId ? 'selected-row' : ''} onClick={() => handleSelection(id)}>
               <td>{id}</td>
               <td>{title}</td>
               <td>{firstName}</td>
@@ -62,13 +54,23 @@ const SearchResults = ({ results }) => {
               <td>{roomId}</td>
               <td>{checkInDate}</td>
               <td>{checkOutDate}</td>
-              <td>{CountNumberOfNights(checkInDate, checkOutDate)}</td>
-              <td><button className="btn btn-primary" onClick={showCustomerProfile(id)}>Show profile</button></td>
+              <td>{countNumberOfNights(checkInDate, checkOutDate)}</td>
+              <td>
+                <button className='btn btn-primary' onClick={() => showCustomerProfile(id)}>
+                  Show profile
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      {customerProfile ? <CustomerProfile id={customerProfile}/> : null}
+      <Backdrop
+        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={customerProfileId !== null}
+        onClick={hideCustomerProfile}
+      >
+        <CustomerProfile id={customerProfileId} />
+      </Backdrop>
     </>
   )
 }
