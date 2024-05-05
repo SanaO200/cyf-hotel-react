@@ -3,6 +3,8 @@ import Header from './components/Header'
 import TouristInfoCards from './components/TouristInfoCards'
 import Restaurant from './components/Restaurant'
 import Footer from './components/Footer'
+import ErrorPage from './ErrorPage'
+import { Outlet } from 'react-router-dom'
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 
@@ -16,22 +18,31 @@ const router = createBrowserRouter([
     element: (
       <>
         <Header />
-        <TouristInfoCards />
-        <Bookings />
-        <Restaurant />
+        <Outlet />
         <Footer contacts={contacts} />
       </>
     ),
-  },
-  {
-    path: '/about',
-    element: (
-      <>
-        <Header />
-        <h1>About Us</h1>
-        <Footer contacts={contacts} />
-      </>
-    ),
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: '/',
+        element: (
+          <>
+            <TouristInfoCards />
+            <Bookings />
+            <Restaurant />
+          </>
+        ),
+      },
+      {
+        path: '/about',
+        element: (
+          <>
+            <h1>About Us</h1>
+          </>
+        ),
+      },
+    ],
   },
 ])
 
